@@ -1,5 +1,6 @@
 """Matrix MCP server — FastMCP + matrix-nio, port 8487."""
 
+import html
 import os
 import sys
 from pathlib import Path
@@ -125,12 +126,12 @@ async def post_artifact(room_name: str, file_path: str, title: str = "") -> dict
         return await upload_file(room_id, raw, filename=path.name)
 
     text = raw.decode("utf-8", errors="replace")
-    header = f"**{title}**\n\n" if title else ""
 
     if path.suffix.lower() in (".md", ".markdown"):
+        html_header = f"<strong>{html.escape(title)}</strong><br><br>" if title else ""
         html_body = md_lib.markdown(text, extensions=["fenced_code", "tables"])
-        message = header + html_body
-        return await send_message(room_id, message, html=True)
+        return await send_message(room_id, html_header + html_body, html=True)
     else:
+        header = f"**{title}**\n\n" if title else ""
         message = header + f"```\n{text}\n```"
         return await send_message(room_id, message)
