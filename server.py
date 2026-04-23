@@ -19,11 +19,28 @@ for _var in _REQUIRED_VARS:
         print(f"  Loaded from: {_env_file}", file=sys.stderr)
         sys.exit(1)
 
+import bleach
 import markdown as md_lib
 from fastmcp import FastMCP
 
 from client import get_messages, send_message, upload_file
 from room_map import list_rooms, resolve_room
+
+# Matrix-spec allowlist for formatted_body (https://spec.matrix.org/v1.11/client-server-api/#mroommessage-msgtypes)
+# Subset that Element renders; intentionally excludes <script>, <iframe>, event handlers, etc.
+MATRIX_ALLOWED_TAGS = frozenset({
+    "strong", "em", "code", "pre", "a", "ul", "ol", "li", "p", "br",
+    "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "hr",
+    "table", "thead", "tbody", "tr", "td", "th",
+    "del", "s", "sub", "sup", "span", "div", "img",
+})
+MATRIX_ALLOWED_ATTRS = {
+    "a": ["href", "title"],
+    "img": ["src", "alt", "title", "width", "height"],
+    "span": ["data-mx-color", "data-mx-bg-color"],
+    "code": ["class"],
+}
+MATRIX_ALLOWED_PROTOCOLS = ["http", "https", "mxc", "matrix"]
 
 ARTIFACT_ALLOWED_PREFIXES = [
     "/home/ted/repos/",
@@ -128,7 +145,14 @@ async def post_artifact(room_name: str, file_path: str, title: str = "") -> dict
     if path.suffix.lower() in (".md", ".markdown"):
         html_header = f"<strong>{html.escape(title)}</strong><br><br>" if title else ""
         html_body = md_lib.markdown(text, extensions=["fenced_code", "tables"])
-        return await send_message(room_id, html_header + html_body, html=True)
+        sanitized = bleach.clean(
+            html_header + html_body,
+            tags=MATRIX_ALLOWED_TAGS,
+            attributes=MATRIX_ALLOWED_ATTRS,
+            protocols=MATRIX_ALLOWED_PROTOCOLS,
+            strip=True,
+        )
+        return await send_message(room_id, sanitized, html=True)
     else:
         header = f"**{title}**\n\n" if title else ""
         message = header + f"```\n{text}\n```"
