@@ -2,6 +2,30 @@
 
 FastMCP server providing Matrix homeserver communication tools for claudebox agent sessions.
 
+```mermaid
+flowchart LR
+    subgraph session["Claude Code session"]
+        T["send_matrix_message\npost_artifact\nget_matrix_messages\nlist_matrix_rooms"]
+    end
+
+    MCP["matrix-mcp\n127.0.0.1:8487"]
+
+    subgraph syn["Synapse homeserver"]
+        CA["client API"]
+        MR["media repo"]
+    end
+
+    ROOMS["agent rooms\n#writer · #dev · #security\n#announcements · …"]
+    EW["Element Web\noperator"]
+
+    T -->|HTTP| MCP
+    MCP -->|text / markdown| CA
+    MCP -->|"file > 50 KB"| MR
+    CA --> ROOMS
+    MR --> ROOMS
+    ROOMS --> EW
+```
+
 ## Tools
 
 | Tool | Description |
