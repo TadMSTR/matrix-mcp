@@ -27,8 +27,6 @@ from room_map import list_rooms, resolve_room
 
 ARTIFACT_ALLOWED_PREFIXES = [
     "/home/ted/repos/",
-    "/home/ted/docker/",
-    "/opt/appdata/",
     "/home/ted/.claude/comms/",
     "/home/ted/.claude/memory/",
 ]
