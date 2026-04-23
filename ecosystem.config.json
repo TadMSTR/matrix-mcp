@@ -1,0 +1,18 @@
+{
+  "apps": [
+    {
+      "name": "matrix-mcp",
+      "script": "/home/ted/repos/personal/matrix-mcp/venv/bin/fastmcp",
+      "args": "run server.py --transport http --host 127.0.0.1 --port 8487",
+      "cwd": "/home/ted/repos/personal/matrix-mcp",
+      "interpreter": "none",
+      "out_file": "/home/ted/.pm2/logs/matrix-mcp-out.log",
+      "error_file": "/home/ted/.pm2/logs/matrix-mcp-error.log",
+      "log_date_format": "YYYY-MM-DD HH:mm:ss",
+      "env": {
+        "ENV_FILE": "/home/ted/.claude-secrets/matrix.env",
+        "PATH": "/home/ted/repos/personal/matrix-mcp/venv/bin:/usr/local/bin:/usr/bin:/bin"
+      }
+    }
+  ]
+}

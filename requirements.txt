@@ -1,0 +1,4 @@
+matrix-nio==0.25.*
+fastmcp>=2.0
+python-dotenv==1.*
+markdown>=3.5,<4
