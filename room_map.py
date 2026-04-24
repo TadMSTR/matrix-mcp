@@ -15,7 +15,7 @@ def _load_room_map() -> dict[str, str]:
         "helm-build":  os.environ["MATRIX_ROOM_HELM_BUILD"],
         "homelab-ops": os.environ["MATRIX_ROOM_HOMELAB_OPS"],
         "security":    os.environ["MATRIX_ROOM_SECURITY"],
-        "pr":          os.environ["MATRIX_ROOM_PR"],
+        "outreach":    os.environ["MATRIX_ROOM_OUTREACH"],
         "writer":      os.environ["MATRIX_ROOM_WRITER"],
         "announcements": os.environ["MATRIX_ROOM_ANNOUNCEMENTS"],
     }

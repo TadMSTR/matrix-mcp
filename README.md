@@ -49,7 +49,7 @@ Room names are short names (`dev`, `task-queue`, `approvals`, etc.) — no `#` o
 | `helm-build` | Helm build agent activity |
 | `homelab-ops` | Homelab ops agent activity |
 | `security` | Security audit findings |
-| `pr` | PR / outreach agent activity |
+| `outreach` | Outreach agent activity |
 | `writer` | Writer agent activity |
 | `announcements` | Cross-agent system announcements |
 
