@@ -51,6 +51,7 @@ Room names are short names (`dev`, `task-queue`, `approvals`, etc.) — no `#` o
 | `security` | Security audit findings |
 | `outreach` | Outreach agent activity |
 | `writer` | Writer agent activity |
+| `memory-sync` | Memory-pipeline and doc-sync completion summaries |
 | `announcements` | Cross-agent system announcements |
 
 ## Setup
