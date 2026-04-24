@@ -14,6 +14,7 @@ def _load_room_map() -> dict[str, str]:
         "dev":         os.environ["MATRIX_ROOM_DEV"],
         "helm-build":  os.environ["MATRIX_ROOM_HELM_BUILD"],
         "homelab-ops": os.environ["MATRIX_ROOM_HOMELAB_OPS"],
+        "memory-sync": os.environ["MATRIX_ROOM_MEMORY_SYNC"],
         "security":    os.environ["MATRIX_ROOM_SECURITY"],
         "outreach":    os.environ["MATRIX_ROOM_OUTREACH"],
         "writer":      os.environ["MATRIX_ROOM_WRITER"],
