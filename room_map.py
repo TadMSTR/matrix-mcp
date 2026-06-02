@@ -7,17 +7,13 @@ _ROOM_MAP: dict[str, str] = {}
 
 def _load_room_map() -> dict[str, str]:
     return {
-        "task-queue":  os.environ["MATRIX_ROOM_TASK_QUEUE"],
-        "approvals":   os.environ["MATRIX_ROOM_APPROVALS"],
-        "research":    os.environ["MATRIX_ROOM_RESEARCH"],
-        "claudebox":   os.environ["MATRIX_ROOM_CLAUDEBOX"],
-        "dev":         os.environ["MATRIX_ROOM_DEV"],
-        "helm-build":  os.environ["MATRIX_ROOM_HELM_BUILD"],
-        "homelab-ops": os.environ["MATRIX_ROOM_HOMELAB_OPS"],
-        "memory-sync": os.environ["MATRIX_ROOM_MEMORY_SYNC"],
-        "security":    os.environ["MATRIX_ROOM_SECURITY"],
-        "outreach":    os.environ["MATRIX_ROOM_OUTREACH"],
-        "writer":      os.environ["MATRIX_ROOM_WRITER"],
+        "sysadmin":      os.environ["MATRIX_ROOM_SYSADMIN"],
+        "research":      os.environ["MATRIX_ROOM_RESEARCH"],
+        "developer":     os.environ["MATRIX_ROOM_DEV"],
+        "security":      os.environ["MATRIX_ROOM_SECURITY"],
+        "writer":        os.environ["MATRIX_ROOM_WRITER"],
+        "alerts":        os.environ["MATRIX_ROOM_ALERTS"],
+        "agents":        os.environ["MATRIX_ROOM_AGENTS"],
         "announcements": os.environ["MATRIX_ROOM_ANNOUNCEMENTS"],
     }
 
