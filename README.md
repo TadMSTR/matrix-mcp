@@ -1,6 +1,6 @@
 # matrix-mcp
 
-FastMCP server providing Matrix homeserver communication tools for claudebox agent sessions.
+FastMCP server providing Matrix homeserver communication tools for forge agent sessions.
 
 ```mermaid
 flowchart LR
@@ -39,20 +39,17 @@ Room names are short names (`dev`, `task-queue`, `approvals`, etc.) — no `#` o
 
 ## Rooms
 
-| Short name | Purpose |
-|------------|---------|
-| `task-queue` | Task dispatcher events |
-| `approvals` | Pending approval requests |
-| `research` | Research agent activity |
-| `claudebox` | Claudebox agent activity |
-| `dev` | Dev agent activity |
-| `helm-build` | Helm build agent activity |
-| `homelab-ops` | Homelab ops agent activity |
-| `security` | Security audit findings |
-| `outreach` | Outreach agent activity |
-| `writer` | Writer agent activity |
-| `memory-sync` | Memory-pipeline and doc-sync completion summaries |
-| `announcements` | Cross-agent system announcements |
+| Short name | Env var | Purpose |
+|------------|---------|---------|
+| `sysadmin` | `MATRIX_ROOM_SYSADMIN` | Sysadmin agent activity |
+| `research` | `MATRIX_ROOM_RESEARCH` | Research agent activity |
+| `developer` | `MATRIX_ROOM_DEV` | Developer agent activity |
+| `security` | `MATRIX_ROOM_SECURITY` | Security audit findings |
+| `writer` | `MATRIX_ROOM_WRITER` | Writer agent activity |
+| `alerts` | `MATRIX_ROOM_ALERTS` | System alerts and notifications |
+| `agents` | `MATRIX_ROOM_AGENTS` | Cross-agent coordination |
+| `announcements` | `MATRIX_ROOM_ANNOUNCEMENTS` | System-wide announcements |
+| `plane` | `MATRIX_ROOM_PLANE` | Plane ticket feed notifications |
 
 ## Setup
 
@@ -65,21 +62,21 @@ venv/bin/pip install -r requirements.txt
 Credentials are loaded from `~/.claude-secrets/matrix.env` (or the path in `ENV_FILE`). Required vars:
 
 ```
-MATRIX_HOMESERVER_URL=https://matrix.claudebox.me
-MATRIX_BOT_USER_ID=@claude-agent:claudebox.me
+MATRIX_HOMESERVER_URL=https://matrix.example.com
+MATRIX_BOT_USER_ID=@bot:example.com
 MATRIX_ACCESS_TOKEN=<bot token>
-MATRIX_ROOM_TASK_QUEUE=!...:claudebox.me
-MATRIX_ROOM_APPROVALS=!...:claudebox.me
-MATRIX_ROOM_RESEARCH=!...:claudebox.me
-MATRIX_ROOM_CLAUDEBOX=!...:claudebox.me
-MATRIX_ROOM_DEV=!...:claudebox.me
-MATRIX_ROOM_HELM_BUILD=!...:claudebox.me
-MATRIX_ROOM_HOMELAB_OPS=!...:claudebox.me
-MATRIX_ROOM_SECURITY=!...:claudebox.me
-MATRIX_ROOM_PR=!...:claudebox.me
-MATRIX_ROOM_WRITER=!...:claudebox.me
-MATRIX_ROOM_ANNOUNCEMENTS=!...:claudebox.me
+MATRIX_ROOM_SYSADMIN=!...:example.com
+MATRIX_ROOM_RESEARCH=!...:example.com
+MATRIX_ROOM_DEV=!...:example.com
+MATRIX_ROOM_SECURITY=!...:example.com
+MATRIX_ROOM_WRITER=!...:example.com
+MATRIX_ROOM_ALERTS=!...:example.com
+MATRIX_ROOM_AGENTS=!...:example.com
+MATRIX_ROOM_ANNOUNCEMENTS=!...:example.com
+MATRIX_ROOM_PLANE=!...:example.com
 ```
+
+All room vars are validated at startup — the server exits immediately if any are missing or empty.
 
 ## Running
 
