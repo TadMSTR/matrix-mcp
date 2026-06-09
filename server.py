@@ -11,8 +11,13 @@ from dotenv import load_dotenv
 _env_file = os.environ.get("ENV_FILE", os.path.expanduser("~/.claude-secrets/matrix.env"))
 load_dotenv(_env_file)
 
-# Fail fast: assert required credentials are present
-_REQUIRED_VARS = ["MATRIX_HOMESERVER_URL", "MATRIX_BOT_USER_ID", "MATRIX_ACCESS_TOKEN"]
+# Fail fast: assert required credentials and room IDs are present
+_REQUIRED_VARS = [
+    "MATRIX_HOMESERVER_URL", "MATRIX_BOT_USER_ID", "MATRIX_ACCESS_TOKEN",
+    "MATRIX_ROOM_SYSADMIN", "MATRIX_ROOM_RESEARCH", "MATRIX_ROOM_DEV",
+    "MATRIX_ROOM_SECURITY", "MATRIX_ROOM_WRITER", "MATRIX_ROOM_ALERTS",
+    "MATRIX_ROOM_AGENTS", "MATRIX_ROOM_ANNOUNCEMENTS", "MATRIX_ROOM_PLANE",
+]
 for _var in _REQUIRED_VARS:
     if not os.environ.get(_var):
         print(f"ERROR: Required environment variable '{_var}' is missing or empty.", file=sys.stderr)
