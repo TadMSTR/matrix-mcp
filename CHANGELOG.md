@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- `plane` room added to room map (`MATRIX_ROOM_PLANE`) for Plane ticket feed notifications
+
+### Security
+- Startup validation (`_REQUIRED_VARS`) now includes all 9 `MATRIX_ROOM_*` env vars — missing room var produces clear error at startup instead of `KeyError` on first call
+
 ## [0.1.1] — 2026-04-23
 
 ### Security
