@@ -44,6 +44,9 @@ Room mappings:
 | `MATRIX_ROOM_ALERTS`           | `alerts`        |
 | `MATRIX_ROOM_AGENTS`           | `agents`        |
 | `MATRIX_ROOM_ANNOUNCEMENTS`    | `announcements` |
+| `MATRIX_ROOM_PLANE`            | `plane`         |
+| `MATRIX_ROOM_HARLOCK`          | `harlock`       |
+| `MATRIX_ROOM_VIKUNJA`          | `vikunja`       |
 
 ## Architecture decisions
 
