@@ -13,15 +13,26 @@ load_dotenv(_env_file)
 
 # Fail fast: assert required credentials and room IDs are present
 _REQUIRED_VARS = [
-    "MATRIX_HOMESERVER_URL", "MATRIX_BOT_USER_ID", "MATRIX_ACCESS_TOKEN",
-    "MATRIX_ROOM_SYSADMIN", "MATRIX_ROOM_RESEARCH", "MATRIX_ROOM_DEV",
-    "MATRIX_ROOM_SECURITY", "MATRIX_ROOM_WRITER", "MATRIX_ROOM_ALERTS",
-    "MATRIX_ROOM_AGENTS", "MATRIX_ROOM_ANNOUNCEMENTS", "MATRIX_ROOM_PLANE",
-    "MATRIX_ROOM_HARLOCK", "MATRIX_ROOM_VIKUNJA",
+    "MATRIX_HOMESERVER_URL",
+    "MATRIX_BOT_USER_ID",
+    "MATRIX_ACCESS_TOKEN",
+    "MATRIX_ROOM_SYSADMIN",
+    "MATRIX_ROOM_RESEARCH",
+    "MATRIX_ROOM_DEV",
+    "MATRIX_ROOM_SECURITY",
+    "MATRIX_ROOM_WRITER",
+    "MATRIX_ROOM_ALERTS",
+    "MATRIX_ROOM_AGENTS",
+    "MATRIX_ROOM_ANNOUNCEMENTS",
+    "MATRIX_ROOM_PLANE",
+    "MATRIX_ROOM_HARLOCK",
+    "MATRIX_ROOM_VIKUNJA",
 ]
 for _var in _REQUIRED_VARS:
     if not os.environ.get(_var):
-        print(f"ERROR: Required environment variable '{_var}' is missing or empty.", file=sys.stderr)
+        print(
+            f"ERROR: Required environment variable '{_var}' is missing or empty.", file=sys.stderr
+        )
         print(f"  Loaded from: {_env_file}", file=sys.stderr)
         sys.exit(1)
 
@@ -34,12 +45,41 @@ from room_map import list_rooms, resolve_room
 
 # Matrix-spec allowlist for formatted_body (https://spec.matrix.org/v1.11/client-server-api/#mroommessage-msgtypes)
 # Subset that Element renders; intentionally excludes <script>, <iframe>, event handlers, etc.
-MATRIX_ALLOWED_TAGS = frozenset({
-    "strong", "em", "code", "pre", "a", "ul", "ol", "li", "p", "br",
-    "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "hr",
-    "table", "thead", "tbody", "tr", "td", "th",
-    "del", "s", "sub", "sup", "span", "div", "img",
-})
+MATRIX_ALLOWED_TAGS = frozenset(
+    {
+        "strong",
+        "em",
+        "code",
+        "pre",
+        "a",
+        "ul",
+        "ol",
+        "li",
+        "p",
+        "br",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "blockquote",
+        "hr",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "td",
+        "th",
+        "del",
+        "s",
+        "sub",
+        "sup",
+        "span",
+        "div",
+        "img",
+    }
+)
 MATRIX_ALLOWED_ATTRS = {
     "a": ["href", "title"],
     "img": ["src", "alt", "title", "width", "height"],
@@ -55,8 +95,13 @@ ARTIFACT_ALLOWED_PREFIXES = [
 ]
 
 ARTIFACT_DENIED_PATTERNS = [
-    ".env", ".secret", "matrix.env", "claude-secrets",
-    "id_rsa", "id_ed25519", ".ssh/",
+    ".env",
+    ".secret",
+    "matrix.env",
+    "claude-secrets",
+    "id_rsa",
+    "id_ed25519",
+    ".ssh/",
 ]
 
 
