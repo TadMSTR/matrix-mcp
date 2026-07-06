@@ -4,6 +4,7 @@
 
 ### Added
 - `plane` room added to room map (`MATRIX_ROOM_PLANE`) for Plane ticket feed notifications
+- `vikunja` room added to room map (`MATRIX_ROOM_VIKUNJA`) for Vikunja task/webhook notifications; also added to the `_REQUIRED_VARS` fail-fast check
 
 ### Security
 - Startup validation (`_REQUIRED_VARS`) now includes all 9 `MATRIX_ROOM_*` env vars — missing room var produces clear error at startup instead of `KeyError` on first call
