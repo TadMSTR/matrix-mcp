@@ -5,7 +5,6 @@ network client setup at import time, which is out of scope for a unit test.
 """
 
 import importlib
-import os
 
 import pytest
 
@@ -34,6 +33,7 @@ def _load_env(monkeypatch):
     for key, value in _DUMMY_ROOMS.items():
         monkeypatch.setenv(key, value)
     import room_map
+
     importlib.reload(room_map)  # drop any cached map from a prior test process
     yield room_map
 

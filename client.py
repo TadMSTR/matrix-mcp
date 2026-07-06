@@ -5,7 +5,7 @@ import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from nio import AsyncClient, LoginResponse, RoomSendResponse, RoomMessagesResponse, RoomMessageText
+from nio import AsyncClient, RoomSendResponse, RoomMessagesResponse, RoomMessageText
 
 SYNC_TOKEN_PATH = Path("/opt/appdata/matrix/mcp-sync-token")
 
@@ -67,22 +67,28 @@ async def get_messages(
         if not isinstance(event, RoomMessageText):
             continue
         ts_ms = event.server_timestamp
-        messages.append({
-            "sender": event.sender,
-            "body": event.body,
-            "timestamp": ts_ms,
-            "timestamp_utc": datetime.fromtimestamp(ts_ms / 1000, tz=timezone.utc).isoformat(),
-            "event_id": event.event_id,
-        })
+        messages.append(
+            {
+                "sender": event.sender,
+                "body": event.body,
+                "timestamp": ts_ms,
+                "timestamp_utc": datetime.fromtimestamp(ts_ms / 1000, tz=timezone.utc).isoformat(),
+                "event_id": event.event_id,
+            }
+        )
 
     if since_hours is not None:
-        cutoff_ms = (datetime.now(tz=timezone.utc) - timedelta(hours=since_hours)).timestamp() * 1000
+        cutoff_ms = (
+            datetime.now(tz=timezone.utc) - timedelta(hours=since_hours)
+        ).timestamp() * 1000
         messages = [m for m in messages if m["timestamp"] >= cutoff_ms]
 
     return messages
 
 
-async def upload_file(room_id: str, data: bytes, filename: str, content_type: str = "text/plain") -> dict:
+async def upload_file(
+    room_id: str, data: bytes, filename: str, content_type: str = "text/plain"
+) -> dict:
     client = await get_client()
     resp, _ = await client.upload(
         data_provider=lambda *_: asyncio.get_event_loop().run_in_executor(None, lambda: data),
@@ -97,7 +103,9 @@ async def upload_file(room_id: str, data: bytes, filename: str, content_type: st
         "url": mxc_uri,
         "info": {"size": len(data), "mimetype": content_type},
     }
-    send_resp = await client.room_send(room_id=room_id, message_type="m.room.message", content=content)
+    send_resp = await client.room_send(
+        room_id=room_id, message_type="m.room.message", content=content
+    )
     if isinstance(send_resp, RoomSendResponse):
         return {"event_id": send_resp.event_id, "mxc_uri": mxc_uri}
     raise RuntimeError(f"Failed to send file message: {send_resp}")

@@ -7,17 +7,17 @@ _ROOM_MAP: dict[str, str] = {}
 
 def _load_room_map() -> dict[str, str]:
     return {
-        "sysadmin":      os.environ["MATRIX_ROOM_SYSADMIN"],
-        "research":      os.environ["MATRIX_ROOM_RESEARCH"],
-        "developer":     os.environ["MATRIX_ROOM_DEV"],
-        "security":      os.environ["MATRIX_ROOM_SECURITY"],
-        "writer":        os.environ["MATRIX_ROOM_WRITER"],
-        "alerts":        os.environ["MATRIX_ROOM_ALERTS"],
-        "agents":        os.environ["MATRIX_ROOM_AGENTS"],
+        "sysadmin": os.environ["MATRIX_ROOM_SYSADMIN"],
+        "research": os.environ["MATRIX_ROOM_RESEARCH"],
+        "developer": os.environ["MATRIX_ROOM_DEV"],
+        "security": os.environ["MATRIX_ROOM_SECURITY"],
+        "writer": os.environ["MATRIX_ROOM_WRITER"],
+        "alerts": os.environ["MATRIX_ROOM_ALERTS"],
+        "agents": os.environ["MATRIX_ROOM_AGENTS"],
         "announcements": os.environ["MATRIX_ROOM_ANNOUNCEMENTS"],
-        "plane":         os.environ["MATRIX_ROOM_PLANE"],
-        "harlock":       os.environ["MATRIX_ROOM_HARLOCK"],
-        "vikunja":       os.environ["MATRIX_ROOM_VIKUNJA"],
+        "plane": os.environ["MATRIX_ROOM_PLANE"],
+        "harlock": os.environ["MATRIX_ROOM_HARLOCK"],
+        "vikunja": os.environ["MATRIX_ROOM_VIKUNJA"],
     }
 
 
@@ -32,9 +32,7 @@ def resolve_room(room_name: str) -> str:
     room_id = _ROOM_MAP.get(room_name)
     if room_id is None:
         known = ", ".join(sorted(_ROOM_MAP.keys()))
-        raise ValueError(
-            f"Unknown room name '{room_name}'. Known rooms: {known}"
-        )
+        raise ValueError(f"Unknown room name '{room_name}'. Known rooms: {known}")
     return room_id
 
 

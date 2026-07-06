@@ -1,0 +1,10 @@
+# Ruff configuration for matrix-mcp.
+# Lint uses Ruff's default rule set (pyflakes F + pycodestyle E4/E7/E9).
+line-length = 100
+target-version = "py312"
+
+[lint.per-file-ignores]
+# server.py intentionally loads dotenv and fail-fast validates the required
+# MATRIX_* env vars before importing modules that read the environment or open
+# network connections at import time. This requires imports below that block.
+"server.py" = ["E402"]
