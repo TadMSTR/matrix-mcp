@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- Unit tests for `client.py` (mocked matrix-nio) and `server.py` (FastMCP tools, artifact-path validation, startup fail-fast) — total coverage now 99% (`client`/`room_map` 100%, `server` 96%)
+
 ## [0.2.0] — 2026-07-06
 
 ### Added
