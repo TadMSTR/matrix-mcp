@@ -50,6 +50,7 @@ Room names are short names (`dev`, `task-queue`, `approvals`, etc.) — no `#` o
 | `agents` | `MATRIX_ROOM_AGENTS` | Cross-agent coordination |
 | `announcements` | `MATRIX_ROOM_ANNOUNCEMENTS` | System-wide announcements |
 | `plane` | `MATRIX_ROOM_PLANE` | Plane ticket feed notifications |
+| `harlock` | `MATRIX_ROOM_HARLOCK` | Harlock personal agent — primary Matrix interface |
 | `vikunja` | `MATRIX_ROOM_VIKUNJA` | Vikunja task/webhook notifications |
 
 ## Setup
@@ -75,6 +76,7 @@ MATRIX_ROOM_ALERTS=!...:example.com
 MATRIX_ROOM_AGENTS=!...:example.com
 MATRIX_ROOM_ANNOUNCEMENTS=!...:example.com
 MATRIX_ROOM_PLANE=!...:example.com
+MATRIX_ROOM_HARLOCK=!...:example.com
 MATRIX_ROOM_VIKUNJA=!...:example.com
 ```
 

@@ -5,6 +5,11 @@
 ### Added
 - `plane` room added to room map (`MATRIX_ROOM_PLANE`) for Plane ticket feed notifications
 - `vikunja` room added to room map (`MATRIX_ROOM_VIKUNJA`) for Vikunja task/webhook notifications; also added to the `_REQUIRED_VARS` fail-fast check
+- GitHub Actions CI (`.github/workflows/ci.yml`): ruff critical-error lint, byte-compile, and pytest on Python 3.12/3.13
+- `tests/test_room_map.py` covering room resolution, unknown-room rejection, and full room coverage
+
+### Fixed
+- Documentation sync: `harlock` documented in README; `plane`, `harlock`, `vikunja` added to the AGENTS.md room table (previously only code had them)
 
 ### Security
 - Startup validation (`_REQUIRED_VARS`) now includes all 9 `MATRIX_ROOM_*` env vars — missing room var produces clear error at startup instead of `KeyError` on first call
