@@ -1,7 +1,12 @@
 # Ruff configuration for matrix-mcp.
-# Lint uses Ruff's default rule set (pyflakes F + pycodestyle E4/E7/E9).
 line-length = 100
 target-version = "py312"
+
+[lint]
+# Pin the rule set explicitly (pyflakes F + pycodestyle E4/E7/E9) rather than
+# relying on ruff's implicit default, which widens across releases and would
+# otherwise leak new rules in on a ruff upgrade. Ruff itself is pinned in CI.
+select = ["E4", "E7", "E9", "F"]
 
 [lint.per-file-ignores]
 # server.py intentionally loads dotenv and fail-fast validates the required
