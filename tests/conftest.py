@@ -21,7 +21,6 @@ _DUMMY_ENV = {
     "MATRIX_ROOM_ALERTS": "!alerts:test",
     "MATRIX_ROOM_AGENTS": "!agents:test",
     "MATRIX_ROOM_ANNOUNCEMENTS": "!announcements:test",
-    "MATRIX_ROOM_PLANE": "!plane:test",
     "MATRIX_ROOM_HARLOCK": "!harlock:test",
     "MATRIX_ROOM_VIKUNJA": "!vikunja:test",
 }
