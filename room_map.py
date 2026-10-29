@@ -16,7 +16,6 @@ def _load_room_map() -> dict[str, str]:
         "approvals": os.environ["MATRIX_ROOM_APPROVALS"],
         "agents": os.environ["MATRIX_ROOM_AGENTS"],
         "announcements": os.environ["MATRIX_ROOM_ANNOUNCEMENTS"],
-        "plane": os.environ["MATRIX_ROOM_PLANE"],
         "harlock": os.environ["MATRIX_ROOM_HARLOCK"],
         "vikunja": os.environ["MATRIX_ROOM_VIKUNJA"],
     }

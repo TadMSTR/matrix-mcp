@@ -45,7 +45,6 @@ def test_missing_required_var_exits_nonzero():
         "MATRIX_ROOM_ALERTS": "!alerts:test",
         "MATRIX_ROOM_AGENTS": "!agents:test",
         "MATRIX_ROOM_ANNOUNCEMENTS": "!announcements:test",
-        "MATRIX_ROOM_PLANE": "!plane:test",
         "MATRIX_ROOM_HARLOCK": "!harlock:test",
         # MATRIX_ROOM_VIKUNJA intentionally omitted
     }
@@ -115,7 +114,8 @@ async def test_get_matrix_messages_happy_path(monkeypatch):
 async def test_list_matrix_rooms_returns_configured_rooms():
     rooms = await _tool_fn(server.list_matrix_rooms)()
     names = {r["name"] for r in rooms}
-    assert {"vikunja", "harlock", "plane", "developer"} <= names
+    assert {"vikunja", "harlock", "developer"} <= names
+    assert "plane" not in names
 
 
 # --- post_artifact -------------------------------------------------------------

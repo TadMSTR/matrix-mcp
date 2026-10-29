@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Removed
+- `plane` room and `MATRIX_ROOM_PLANE` (Plane is decommissioned; matrix-notify-overhaul-2026-10 p1). The variable is no longer required at startup.
+
 ## [0.2.1] — 2026-07-06
 
 ### Added
