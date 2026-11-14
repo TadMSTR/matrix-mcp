@@ -5,20 +5,24 @@ on:
     tags:
       - "v*"
 
+# Read at the top; the one job that creates the release escalates below.
 permissions:
-  contents: write # Required for gh release create
+  contents: read
 
-# Source-only release (no PyPI) — same pattern as matrix-dispatcher/agent-bus/dockhand-mcp/githost-mcp.
-# A tag `vX.Y.Z` cuts a GitHub Release with auto-generated notes.
+# Source-only release (no PyPI): a tag `vX.Y.Z` cuts a GitHub Release with auto-generated notes.
 jobs:
   create-github-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required for gh release create
 
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
           fetch-depth: 0
+          # gh reads GH_TOKEN from the step env; no token left in .git/config.
+          persist-credentials: false
 
       - name: Create GitHub Release (source only)
         env:

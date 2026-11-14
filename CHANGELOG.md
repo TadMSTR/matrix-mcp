@@ -2,7 +2,20 @@
 
 ## [Unreleased]
 
+### Added
+- `pyproject.toml` (a virtual project: nothing is built or installed) and a committed `uv.lock`
+- Minimum versions for the packages a tool call reaches: fastmcp 3.4.10, mcp 1.30.0, starlette 1.3.1, python-multipart 0.0.31, anyio 4.14.2, h11 0.16.0, opentelemetry-api 1.45.2, pyjwt 2.15, aiohttp 3.14.4, multidict 6.9.1, h2 4.4.1, markdown 3.8.1, bleach 6.4.0, pygments 2.20.0, python-dotenv 1.2.2
+- CI audits the locked runtime and dev sets separately, checks `uv lock --check`, and runs a gating job against the newest allowed versions; weekly as well as on push
+
+### Changed
+- The README install section is now a script that builds `venv/` from a fresh clone of a release tag's `uv.lock` and checks the checkout byte-for-byte against the release
+- fastmcp is bounded below 4 (it was `>=2.0`, unbounded)
+- CI installs from the lock with uv; every action is pinned to a commit SHA
+- `release.yml`: `contents: write` moved from the workflow to the release job; checkout no longer persists credentials
+- `.gitignore` covers `.env.*`
+
 ### Removed
+- `requirements.txt`: `uv.lock` replaces it
 - `plane` room and `MATRIX_ROOM_PLANE` (Plane is decommissioned; matrix-notify-overhaul-2026-10 p1). The variable is no longer required at startup.
 
 ## [0.2.1] — 2026-07-06

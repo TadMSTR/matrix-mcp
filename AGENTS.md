@@ -19,7 +19,8 @@ server.py                      FastMCP server — 3 tools, HTML sanitization, ar
 client.py                      Async matrix-nio helpers: send_message, get_messages, upload_file
 room_map.py                    Room name → Matrix room ID resolution from env vars
 ecosystem.forge.config.json    PM2 config for forge
-requirements.txt               Pinned exact versions
+pyproject.toml                 Dependency ranges and security floors
+uv.lock                        Locked dependency set (what CI audits and the deploy installs)
 ```
 
 ## Configuration
