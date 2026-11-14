@@ -87,7 +87,7 @@ gx() {
 #    service would change the code it runs.
 [ -d "$REPO/.git" ] || gx clone --quiet "$URL" "$REPO"
 cd "$REPO" || die "cannot enter $REPO"
-[ ! -e venv ] || die "venv exists: stop the service and move venv aside first"
+[ ! -e venv ] || die "venv exists: move it aside first (and stop the service if it is running)"
 
 # 1. The release, fresh from the network. The dependency set comes from this clone, never
 #    from the checkout: a long-lived checkout's index, config and object store can all
@@ -177,7 +177,20 @@ venv keeps whatever older dependency versions it finds there, if they still sati
 declared ranges. Build at the final path rather than building elsewhere and moving it: the
 venv's scripts embed its path (PM2 runs `venv/bin/fastmcp`). A uv-built venv has no `pip`.
 Stop the service and move its venv aside before running the script (step 0 refuses to run
-otherwise), and restart it after step 4, by name (`pm2 restart matrix-mcp-forge`).
+otherwise), and restart it by name (`pm2 restart matrix-mcp-forge`) only after the script
+prints `ready`.
+
+If the script stops early, it leaves the service stopped, and nothing puts it back. What it
+leaves depends on where it stopped:
+
+- **Before step 2** (the tag or the fresh clone): the checkout and the old venv are as they
+  were. Move the old venv back and restart.
+- **Step 2 or later:** the checkout is detached at the release tag, and from step 3 a `venv/`
+  may exist that never passed the step 4 checks. Don't start the service on it. Move that
+  `venv/` aside, move the old venv back, check out the commit the service ran before
+  (`git checkout <previous commit>`), then restart.
+
+Don't run the script again until `venv/` is gone: the check at step 0 refuses while it exists.
 
 CI audits the locked set on every push and weekly, but nothing reads a scheduled run's
 result unless you watch it, and GitHub disables a public repository's scheduled workflows
