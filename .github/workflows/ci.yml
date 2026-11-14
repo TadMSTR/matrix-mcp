@@ -4,36 +4,137 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # Weekly, Monday 05:53 UTC, so the `latest` job and the audits meet a new upstream
+    # release or advisory without waiting for a PR.
+    - cron: "53 5 * * 1"
+
+# Least privilege at the top. No job below needs more.
+permissions:
+  contents: read
 
 jobs:
   test:
+    name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        id: py
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-asyncio pytest-cov ruff==0.16.0
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          # Without this the SHA-pinned action fetches the latest uv.
+          version: "0.13.4"
+
+      # From the lock: `--frozen` installs exactly uv.lock and fails rather than
+      # re-resolve, so a green run is evidence about the set that is deployed.
+      - name: Install dependencies (locked, with dev group)
+        env:
+          UV_PYTHON: ${{ steps.py.outputs.python-path }}
+        run: uv sync --frozen --group dev
 
       - name: Lint
-        run: ruff check .
+        run: uv run --frozen --no-sync ruff check .
 
       - name: Format check
-        run: ruff format --check .
+        run: uv run --frozen --no-sync ruff format --check .
 
       - name: Byte-compile all modules
-        run: python -m compileall -q client.py room_map.py server.py
+        run: uv run --frozen --no-sync python -m compileall -q client.py room_map.py server.py
 
       - name: Run tests
-        run: pytest -q --cov=. --cov-report=term-missing
+        run: uv run --frozen --no-sync pytest -q --cov=. --cov-report=term-missing
+
+  # The newest versions pyproject.toml allows, not the lock. Gating: fastmcp and mcp are
+  # capped below their next major, so anything that breaks here is a release a fresh
+  # resolve could pick up today.
+  latest:
+    name: Test against latest allowed versions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        id: py
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.13.4"
+
+      - name: Resolve and install the newest allowed set
+        env:
+          UV_PYTHON: ${{ steps.py.outputs.python-path }}
+        run: |
+          uv lock --upgrade
+          uv sync --frozen --group dev
+
+      - name: Versions under test
+        run: >-
+          uv run --frozen --no-sync python -c "import importlib.metadata as m;
+          [print(p, m.version(p)) for p in
+          ('fastmcp', 'mcp', 'matrix-nio', 'aiohttp', 'starlette', 'uvicorn')]"
+
+      - run: uv run --frozen --no-sync pytest -q
+
+  # Audits the LOCKED set, not the ranges: auditing pyproject ranges re-resolves them and
+  # reports on what a fresh install would get today, not on what is deployed.
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.13.4"
+
+      # A committed lock nothing checks for currency is a stale file that looks pinned.
+      - name: Lockfile is in sync with pyproject.toml
+        run: uv lock --check
+
+      # Two gates: a runtime advisory affects the deployed service, a dev advisory only
+      # this repository's CI. --no-emit-project: the virtual project has no version entry.
+      - name: Export runtime dependency set
+        run: uv export --frozen --no-emit-project --no-dev --format pylock.toml -o pylock.runtime.toml
+
+      - name: Export dev dependency set
+        run: uv export --frozen --no-emit-project --only-group dev --format pylock.toml -o pylock.dev.toml
+
+      # Each gate runs in its own directory. PEP 751 allows `pylock.<name>.toml`, so
+      # `pip-audit --locked .` from the root would pick up both files and merge the gates.
+      # The audit tool is pinned too: `uv tool run` otherwise resolves it fresh each run.
+      - name: Audit runtime dependencies
+        run: |
+          mkdir -p .audit-runtime && cp pylock.runtime.toml .audit-runtime/pylock.toml
+          uv tool run --from "pip-audit==2.10.1" pip-audit --strict --locked .audit-runtime
+
+      - name: Audit dev dependencies
+        run: |
+          mkdir -p .audit-dev && cp pylock.dev.toml .audit-dev/pylock.toml
+          uv tool run --from "pip-audit==2.10.1" pip-audit --strict --locked .audit-dev

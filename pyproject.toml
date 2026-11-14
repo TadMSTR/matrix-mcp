@@ -1,0 +1,74 @@
+[project]
+name = "matrix-mcp"
+version = "0.3.0"
+description = "FastMCP server providing Matrix homeserver communication tools for forge agents"
+readme = "README.md"
+license = "MIT"
+# Matches the lowest Python in the CI matrix. A lower bound here would fork uv.lock into
+# branches that no CI job installs or audits.
+requires-python = ">=3.12"
+# BOUNDED RANGES. fastmcp was `>=2.0` in requirements.txt, which admits any future major.
+#
+# SECURITY FLOORS (2026-11-14). Below the five direct dependencies, each entry is declared
+# only to hold a floor: the first release with a published security fix, for a package a
+# tool call reaches. Traced by serving streamable-http and calling the tools:
+# - transport: fastmcp, mcp, starlette, python-multipart, anyio, h11 (uvicorn's parser)
+# - opentelemetry-api: fastmcp parses every tool call's `_meta` trace context with it,
+#   whether or not a telemetry sink is configured
+# - pyjwt: mcp's auth layer. Not loaded today (no auth provider is configured); floored
+#   so that enabling one cannot pick up an old release
+# - outbound: matrix-nio sends through aiohttp (multidict is its C-extension header store;
+#   h2 comes in through nio)
+# - post_artifact: markdown renders and bleach sanitises each Markdown artifact; the
+#   fenced_code extension imports pygments on first use, without highlighting
+# - python-dotenv: direct dependency, startup only
+#
+# uv.lock is the control: it pins every package, and a deploy builds a fresh venv from it.
+# A fresh resolve outside the lock could still pick an older release of these, which no
+# tool call reaches. idna loads with yarl but nothing encodes a non-ASCII host; aiohttp
+# verifies TLS with the system store, so certifi is never imported; matrix-nio imports
+# pycryptodome, but nothing encrypts without E2E; pydantic-settings loads at startup only;
+# authlib, cryptography, dnspython, jaraco-context and joserfc are never imported.
+# Lock-held, all nine: authlib, certifi, cryptography, dnspython, idna, jaraco-context,
+# joserfc, pycryptodome, pydantic-settings.
+dependencies = [
+    "matrix-nio>=0.25.2,<0.26",
+    "fastmcp>=3.4.10,<4",
+    "python-dotenv>=1.2.2,<2",
+    "markdown>=3.8.1,<4",
+    "bleach>=6.4.0,<7",
+    # Capped below 2 with fastmcp's own range.
+    "mcp>=1.30.0,<2",
+    "starlette>=1.3.1",
+    "python-multipart>=0.0.31",
+    "anyio>=4.14.2",
+    "h11>=0.16.0",
+    "pyjwt>=2.15",
+    "opentelemetry-api>=1.45.2",
+    "aiohttp>=3.14.4,<4",
+    "multidict>=6.9.1",
+    "h2>=4.4.1",
+    "pygments>=2.20.0",
+]
+
+[project.urls]
+Repository = "https://github.com/TadMSTR/matrix-mcp"
+Changelog = "https://github.com/TadMSTR/matrix-mcp/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "pytest-cov>=4.0",
+    # Pinned exactly: an unpinned formatter makes `ruff format --check` depend on the day.
+    "ruff==0.16.0",
+]
+
+[tool.uv]
+# Not a package. PM2 runs `venv/bin/fastmcp run server.py` from the checkout, and the flat
+# modules (server.py, client.py, room_map.py) import from there. There is nothing to build
+# or install, so there is no [build-system] table and no build dependency to pin.
+# SECURITY[accepted]: the service runs its code from the checkout, which the install script
+# checks against the release at install time only; later edits there run at the next
+# restart. Kept as is: the service is due to be retired.
+package = false
