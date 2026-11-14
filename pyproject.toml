@@ -68,4 +68,7 @@ dev = [
 # Not a package. PM2 runs `venv/bin/fastmcp run server.py` from the checkout, and the flat
 # modules (server.py, client.py, room_map.py) import from there. There is nothing to build
 # or install, so there is no [build-system] table and no build dependency to pin.
+# SECURITY[accepted]: the service runs its code from the checkout, which the install script
+# checks against the release at install time only; later edits there run at the next
+# restart. Kept as is: the service is due to be retired.
 package = false
