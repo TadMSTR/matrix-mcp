@@ -75,7 +75,8 @@ REPO=${REPO:-$HOME/repos/personal/matrix-mcp}
 PY=/usr/bin/python3.13
 die() { echo "install: $*" >&2; exit 1; }
 tmp=$(mktemp -d) && trap 'rm -rf -- "$tmp"' EXIT
-# Git without the system or global config (no URL rewrites, no hooks, no fsmonitor).
+# Git without the system or global config, hooks or fsmonitor. A command run inside the
+# checkout, or against its .git, still reads the checkout's own .git/config.
 gx() {
   GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null \
     git -c core.fsmonitor=false -c core.hooksPath=/dev/null "$@"
