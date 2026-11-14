@@ -10,3 +10,5 @@ __pycache__/
 .ruff_cache/
 htmlcov/
 .env.*
+*.core
+core.[0-9]*

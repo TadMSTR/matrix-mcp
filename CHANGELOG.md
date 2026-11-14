@@ -12,7 +12,7 @@
 - fastmcp is bounded below 4 (it was `>=2.0`, unbounded)
 - CI installs from the lock with uv; every action is pinned to a commit SHA
 - `release.yml`: `contents: write` moved from the workflow to the release job; checkout no longer persists credentials
-- `.gitignore` covers `.env.*`
+- `.gitignore` covers `.env.*` and core dumps (`*.core`, `core.[0-9]*`)
 
 ### Removed
 - `requirements.txt`: `uv.lock` replaces it
